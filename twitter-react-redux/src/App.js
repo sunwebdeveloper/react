@@ -32,7 +32,11 @@ class App extends Component {
                 <Widget>
                     <div className="tweetsArea">
                         <Tweet imagem={'http://pogmogoal.com/wp-content/uploads/young-pele.jpg'}
-                               usuario='Pele'/>
+                               tag='@pele'
+                               usuario='Pele'
+                               likes='40'>
+                          <span>Lorem, ipsum dolor sit <a href="/trends/#amet" data-reactroot="">#amet</a> consectetur adipisicing <a href="/trends/#elit" data-reactroot="">#elit</a>. Adipisci ut cumque tempora? Quam velit vitae voluptatum tempora iste, mollitia, sa</span>
+                        </Tweet>
                     </div>
                 </Widget>
             </Dashboard>

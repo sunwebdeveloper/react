@@ -7,6 +7,8 @@ import TrendsArea from './components/TrendsArea'
 import Tweet from './components/Tweet'
 import TweeterForm from './components/TweetForm'
 
+//leticia.costa@caelum.com.br
+
 class App extends Component {
    state = {
         tweets: []

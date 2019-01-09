@@ -5,8 +5,17 @@ import Dashboard from './components/Dashboard'
 import Widget from './components/Widget'
 import TrendsArea from './components/TrendsArea'
 import Tweet from './components/Tweet'
+import TweeterForm from './components/TweetForm'
 
 class App extends Component {
+   state = {
+        tweets: []
+   }
+
+   handleSubmit(novoTweet){
+       this.setState({tweets:[novoTweet, ...this.state.tweets]});
+   }
+
   render() {
     return (
       <Fragment>
@@ -16,13 +25,8 @@ class App extends Component {
         <div className="container">
             <Dashboard>
                 <Widget>
-                    <form className="novoTweet">
-                        <div className="novoTweet__editorArea">
-                            <span className="novoTweet__status">0/140</span>
-                            <textarea className="novoTweet__editor" placeholder="O que está acontecendo?"></textarea>
-                        </div>
-                        <button type="submit" className="novoTweet__envia">Tweetar</button>
-                    </form>
+                    <TweeterForm />
+                    
                 </Widget>
                 <Widget>
                     <TrendsArea />
@@ -31,12 +35,20 @@ class App extends Component {
             <Dashboard posicao="centro">
                 <Widget>
                     <div className="tweetsArea">
-                        <Tweet imagem={'http://pogmogoal.com/wp-content/uploads/young-pele.jpg'}
-                               tag='@pele'
-                               usuario='Pele'
-                               likes='40'>
-                          <span>Lorem, ipsum dolor sit <a href="/trends/#amet" data-reactroot="">#amet</a> consectetur adipisicing <a href="/trends/#elit" data-reactroot="">#elit</a>. Adipisci ut cumque tempora? Quam velit vitae voluptatum tempora iste, mollitia, sa</span>
-                        </Tweet>
+                        {this.state.tweets.length === 0
+                            ? 'Digite algo'
+                            : this.state.tweets.map((item, index) => (
+                                    <Tweet 
+                                        key={index}
+                                        nome='Rafael Leandro'
+                                        tag='rafaelleandro'
+                                        imagem={'http://pogmogoal.com/wp-content/uploads/young-pele.jpg'}
+                                        likes={0}>        
+                                        {item}
+                                    </Tweet>
+                                )                                 
+                            )
+                        }                        
                     </div>
                 </Widget>
             </Dashboard>

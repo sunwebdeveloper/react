@@ -1,7 +1,14 @@
 import React, { Component } from 'react'
 import './trendsArea.css'
 
-
+const trends = [
+    'bagulhos',
+    'bagulheiros',
+    'boloDeMaracujá',
+    'sucoDeMaracujá',
+    'guerraMemeal',
+    'BRWins'
+];
 
 class TrendsArea extends Component {
     render() {
@@ -9,9 +16,9 @@ class TrendsArea extends Component {
             <div className="trendsArea">
                 <h2 className="trendsArea__titulo widget__titulo">Trends Brasil</h2>
                 <ol className="trendsArea__lista">
-                    {}
-                    <li><a href="/">#bagulhos</a></li>
-                    <li><a href="/">#bagulheiros</a></li>
+                    {trends.map((trendItem, index) => (
+                        <li key={index}><a href="/">#{trendItem}</a></li>
+                    ))}
                 </ol>
             </div>
         )

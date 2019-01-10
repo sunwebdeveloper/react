@@ -7,13 +7,13 @@ const Feed = ({ tweets }) => (
             ? 'Digite algo'
             : tweets.map((item, index) => (
                 <Tweet
-                    key={index}
-                    nome="Rafael L Santos"
-                    tag="@rafael"
-                    imagem="https://bit.ly/2FhaBD0"
-                    links={0}
+                    key={item._id}
+                    nome={`${item.usuario.nome} ${item.usuario.sobrenome}`}
+                    tag={item.usuario.login}
+                    imagem={item.usuario.foto}
+                    likes={item.totalLikes}
                 >
-                    {item}
+                    {item.conteudo}
                 </Tweet>
             ))
         }

@@ -7,18 +7,34 @@ class TweetForm extends Component {
     textoTweet: ''
   }
 
-  render() {
-    const { executeOnSubmit } = this.props;
+  handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const { executeOnSubmit } = this.props;
+    const resposta = await fetch(
+      `http://twitelum-api.herokuapp.com/tweets?X-AUTH-TOKEN=${localStorage.getItem('TOKEN')}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ conteudo: this.state.textoTweet })
+      }
+    );
+
+    if (!resposta.ok) {
+      console.error('Alguma coisa deu errado!');
+      return;
+    }
+
+    const respostaJSON = await resposta.json();
+
+    executeOnSubmit(respostaJSON);
+    this.setState({ textoTweet: '' });
+  }
+
+  render() {
     return (
       <form
         className="novoTweet"
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          executeOnSubmit(this.state.textoTweet);
-          this.setState({ textoTweet: '' });
-        }}
+        onSubmit={this.handleSubmit}
       >
         <div className="novoTweet__editorArea">
           <span

@@ -1,7 +1,22 @@
 import React, { Component } from 'react'
+import propTypes from 'prop-types';
+
 import './tweet.css'
 
 class Tweet extends Component {
+    static propTypes = {
+        imagem: propTypes.string,
+        nome: propTypes.string.isRequired,
+        tag: propTypes.string.isRequired,
+        children:propTypes.string.isRequired,
+        likes: propTypes.number
+    }
+
+    static defaultProps = {
+        imagem: 'http://www.socialbits.com.br/wp-content/uploads/2015/03/user.png',
+        likes: 0
+    }
+
     render() {
         const { imagem, nome, tag, children, likes } = this.props;
 

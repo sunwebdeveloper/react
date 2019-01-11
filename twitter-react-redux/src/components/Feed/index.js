@@ -1,4 +1,5 @@
 import React from 'react'
+import propTypes from 'prop-types';
 import Tweet from './../Tweet'
 
 const Feed = ({ tweets }) => (
@@ -19,5 +20,14 @@ const Feed = ({ tweets }) => (
         }
     </div>
 )
+
+Feed.propTypes = {
+
+};
+
+Feed.defaultProps = {
+
+};
+
 
 export default Feed;

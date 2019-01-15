@@ -11,16 +11,15 @@ import './assets/css/notificacao.css'
 
 import './assets/css/novoTweet.css'
 // import './index.css';
+
+// Roteamento
 import { BrowserRouter } from 'react-router-dom';
-import Routes from './routes'
+import Routes from './routes';
 
 import registerServiceWorker from './registerServiceWorker';
 
-
 ReactDOM.render(
-     <BrowserRouter>
-        <Routes />
-     </BrowserRouter>,
-     
-document.getElementById('root'));
+  <BrowserRouter>
+    <Routes />
+  </BrowserRouter>, document.getElementById('root'));
 registerServiceWorker();

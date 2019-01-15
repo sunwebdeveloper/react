@@ -33,6 +33,7 @@ class LoginPage extends Component {
         const respostaJSON = await resposta.json();
 
         localStorage.setItem('TOKEN', respostaJSON.token);
+        localStorage.setItem('LOGIN', login);
         this.props.history.push('/');        
     }
 

@@ -6,14 +6,17 @@ import Dashboard from '../../components/Dashboard'
 import Widget from '../../components/Widget'
 import TrendsArea from '../../components/TrendsArea'
 import TweeterForm from '../../components/TweetForm'
+import Modal from '../../components/Modal'
 
 import './../../assets/css/container.css'
+import Tweet from '../../components/Tweet';
 
 //leticia.costa@caelum.com.br
 
 class Home extends Component {
    state = {
-        tweets: []
+        tweets: [],
+        tweetAtivo: {}
    }
 
    componentDidMount = async () => {
@@ -35,14 +38,32 @@ class Home extends Component {
    }
 
    handleSubmit = (novoTweet) => {
-       this.setState({ tweets: [novoTweet, ...this.state.tweets,] });
+       this.setState({ tweets: [{ ...novoTweet, likeado: false }, ...this.state.tweets,] });
    }
 
+   handleRemove = async (id) => {
+    const resposta = await fetch(
+        `http://twitelum-api.herokuapp.com/twetts/${id}/like?X-AUTH-TOKEN=${localStorage.getItem('TOKEN')}`,
+        {method: 'DELETE' }
+    );
+
+    if(!resposta.ok) return console.error('Algo deu errado!');
+
+    this.setState({
+        tweets: this.state.tweets.filter((item) => item._id !== id)
+    });
+   }
+
+   handleMostraTweet = (event, id) => {
+       this.setState({
+           tweetAtivo: this.state.tweets.find(item => item._id === id)
+       })
+   }
   render() {
     return (
       <Fragment>
         <Cabecalho>
-            <NavMenu usuario="Rafael" />
+            <NavMenu usuario={localStorage.getItem('LOGIN')} />
         </Cabecalho>
         <div className="container">
             <Dashboard>
@@ -55,9 +76,21 @@ class Home extends Component {
             </Dashboard>
             <Dashboard posicao="centro">
                 <Widget>
-                    <Feed tweets={this.state.tweets} />
+                    <Feed tweets={this.state.tweets} 
+                          removeTweet={this.handleRemove}
+                          mostraTweet={this.handleMostraTweet}
+                    />
                 </Widget>
             </Dashboard>
+            <Modal 
+                estaAberta={this.state.tweetAtivo._id} 
+                fechaModal={ () => this.setState({ tweetAtivo : {} }) }
+            >
+                <Widget>
+                    <Tweet></Tweet>
+                </Widget>
+            </Modal>
+            
         </div>
       </Fragment>
     );

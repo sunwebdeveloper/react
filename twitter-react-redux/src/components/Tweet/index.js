@@ -4,10 +4,17 @@ import propTypes from 'prop-types';
 import './tweet.css'
 
 class Tweet extends Component {
+    state = {
+        likeado: this.props.likeado,
+        totalLikes: this.props.likes
+    }
+
     static propTypes = {
         imagem: propTypes.string,
+        id:propTypes.string.isRequired,
         nome: propTypes.string.isRequired,
         tag: propTypes.string.isRequired,
+        likeado: propTypes.bool,
         children:propTypes.string.isRequired,
         likes: propTypes.number
     }
@@ -17,11 +24,27 @@ class Tweet extends Component {
         likes: 0
     }
 
+    handleCurtir = async (id) => {             
+        const resposta = await fetch(
+            `http://twitelum-api.herokuapp.com/twetts/${id}/like?X-AUTH-TOKEN=${localStorage.getItem('TOKEN')}`, {
+            method: 'POST'
+        });
+        
+        if(!resposta.ok) return console.error('Algo deu errado!');
+
+        this.setState = ((stateanterior) => ({
+            likeado: !stateanterior.likeado,
+            likes: stateanterior.likes + (stateanterior.likado ? -1 : 1)
+        }));
+    }
+
     render() {
-        const { imagem, nome, tag, children, likes } = this.props;
+        const { imagem, nome, tag, children, onRemove, onShow } = this.props;
+        const { likeados, likes } = this.state;
+        const tweetremovivel = localStorage.getItem('LOGIN') === tag
 
         return (
-            <article className="tweet">
+            <article className="tweet" onClick={ (id) => onShow(id) } >
                 <div className="tweet__cabecalho">
                     <img className="tweet__fotoUsuario" src={imagem} alt="" />
                     <h1 className="tweet__nomeUsuario">{nome}</h1>
@@ -32,7 +55,11 @@ class Tweet extends Component {
                 </p>
                 <footer className="tweet__footer">
                     <button className="btn btn--clean">
-                        <svg className="icon icon--small iconHeart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.5 47.5">
+                        <svg 
+                            className={`icon icon--small iconHeart ${this.state.likeado && 'iconHeart--active'}`}
+                             onClick={this.handleCurtir}
+                             xmlns="http://www.w3.org/2000/svg" 
+                             viewBox="0 0 47.5 47.5">
                             <defs>
                                 <clipPath id="a">
                                     <path d="M0 38h38V0H0v38z"></path>
@@ -44,6 +71,12 @@ class Tweet extends Component {
                         </svg>
                         {likes}
                     </button>
+                    {tweetremovivel && (
+                        <button onClick={(id) => onRemove({id})} className='btn btn--blue btn--remove'>
+                            X
+                        </button>
+                    )}
+                    
                 </footer>
             </article>
         )

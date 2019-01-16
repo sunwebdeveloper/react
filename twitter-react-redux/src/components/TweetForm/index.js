@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+
+import * as TwweetApi from './../../components/api/tweetApi'
 
 // usar props ou trazer o state para cá?
 
@@ -10,23 +13,7 @@ class TweetForm extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { executeOnSubmit } = this.props;
-    const resposta = await fetch(
-      `http://twitelum-api.herokuapp.com/tweets?X-AUTH-TOKEN=${localStorage.getItem('TOKEN')}`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ conteudo: this.state.textoTweet })
-      }
-    );
-
-    if (!resposta.ok) {
-      console.error('Alguma coisa deu errado!');
-      return;
-    }
-
-    const respostaJSON = await resposta.json();
-
-    executeOnSubmit(respostaJSON);
+    this.props.dispatch(await TwweetApi.cria(this.state.textoTweet));
     this.setState({ textoTweet: '' });
   }
 
@@ -61,4 +48,4 @@ class TweetForm extends Component {
   }
 }
 
-export default TweetForm;
+export default connect()(TweetForm);

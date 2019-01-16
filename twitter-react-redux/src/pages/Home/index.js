@@ -8,49 +8,30 @@ import TrendsArea from './../../components/TrendsArea'
 import Tweet from './../../components/Tweet';
 import TweetForm from './../../components/TweetForm';
 import Modal from './../../components/Modal';
+import { connect } from 'react-redux';
 
-class Home extends Component {
+import * as tweetApi from '../../components/api/tweetApi';
+
+class Home extends Component { 
   state = {
-    tweets: [],
     tweetAtivo: { usuario: {} }
   }
 
   componentDidMount = async () => {
-    // console.log('Montei e rendereizei tudo!');
+    const { dispatch } = this.props;
     
-    const resposta = await fetch(`http://twitelum-api.herokuapp.com/tweets?X-AUTH-TOKEN=${localStorage.getItem('TOKEN')}`);
-
-    if (!resposta.ok) {
-      console.error('Não foi possível recuperar os tweets');
-      return;
-    }
-
-    const respostaJSON = await resposta.json();
-    this.setState({ tweets: respostaJSON });
+    dispatch(await tweetApi.carrega());  
   }
 
   componentDidCatch (erro) {
     this.props.history.push('/login');
   }
-
-  handleSubmit = (novoTweet) => {
-    this.setState({ tweets: [{ ...novoTweet, likeado: false }, ...this.state.tweets] });
-  }
-
+ 
   handleRemove = async (id) => {
     // Enviar requisição
-    const resposta = await fetch(
-        `http://twitelum-api.herokuapp.com/tweets/${id}?X-AUTH-TOKEN=${localStorage.getItem('TOKEN')}`,
-        { method: 'DELETE' }
-    );
+    const { dispatch } = this.props;
 
-    // Validar resposta
-    if (!resposta.ok) return console.error('Algo deu errado');
-
-    // Remoção deste tweet da lista e atualizar a minha lista
-    this.setState({
-      tweets: this.state.tweets.filter(item => item._id !== id)
-    });
+    dispatch(await tweetApi.remove(id))
   }
 
   handleMostraTweet = (event, id) => {
@@ -64,6 +45,8 @@ class Home extends Component {
   }
 
   render() {
+    const { tweets} = this.props;
+
     return (
       <Fragment>
         <Cabecalho>
@@ -72,7 +55,7 @@ class Home extends Component {
         <div className="container">
           <Dashboard>
             <Widget>
-              <TweetForm executeOnSubmit={this.handleSubmit} />
+              <TweetForm />
             </Widget>
             <Widget>
               <TrendsArea />
@@ -81,7 +64,7 @@ class Home extends Component {
           <Dashboard posicao="centro">
             <Widget>
               <Feed
-                tweets={this.state.tweets}
+                tweets={tweets}
                 removeTweet={this.handleRemove}
                 mostraTweet={this.handleMostraTweet}
               />
@@ -114,4 +97,10 @@ class Home extends Component {
   }
 }
 
-export default Home;
+function mapStateToProps(state){
+  return {
+    tweets: state.tweets
+  }
+}
+
+export default connect(mapStateToProps)(Home);

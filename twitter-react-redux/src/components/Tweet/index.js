@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
+import * as tweetApi from './../../components/api/tweetApi'
+
 import './tweet.css';
 
 class Tweet extends Component {
-    state = {
-        likeado: this.props.likeado,
-        likes: this.props.likes
-    }
-
     static propTypes = {
         imagem: propTypes.string,
         likes: propTypes.number,
@@ -23,29 +20,8 @@ class Tweet extends Component {
         likes: 0
     }
 
-    handleCurtir = async () => {
-        // Capturar o id deste tweet
-        const { id } = this.props;
-
-        // Enviar requisição
-        const resposta = await fetch(
-            `http://twitelum-api.herokuapp.com/tweets/${id}/like?X-AUTH-TOKEN=${localStorage.getItem('TOKEN')}`,
-            { method: 'POST' }
-        );
-
-        // Validar resposta
-        if (!resposta.ok) return console.error('Algo deu errado');
-
-        // Atualizar estados
-        this.setState((stateAnterior) => ({
-            likeado: !stateAnterior.likeado,
-            likes: stateAnterior.likes + (stateAnterior.likeado ? -1 : 1)
-        }));
-    }
-
     render() {
-        const { id, imagem, nome, tag, children, onRemove, onShow } = this.props;
-        const { likeado, likes } = this.state;
+        const { id, imagem, nome, tag, likeado, likes, children, handleCurtir, handleRemove, onShow } = this.props;
         const tweetRemovivel = localStorage.getItem('LOGIN') === tag;
 
         return (
@@ -62,7 +38,7 @@ class Tweet extends Component {
                     <button className="btn btn--clean">
                         <svg
                             className={`icon icon--small iconHeart ${likeado && 'iconHeart--active'}`}
-                            onClick={this.handleCurtir}
+                            onClick={() => handleCurtir(id)}
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 47.5 47.5"
                         >
@@ -78,7 +54,7 @@ class Tweet extends Component {
                         {likes}
                     </button>
                     {tweetRemovivel && (
-                        <button onClick={() => onRemove(id)} className="btn btn--blue btn--remove">
+                        <button onClick={() => handleRemove(id)} className="btn btn--blue btn--remove">
                             X
                         </button>
                     )}
